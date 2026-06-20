@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ORBIT — Earth's Real-Time Space Intelligence</title>
+
+  <!-- Leaflet map library (Person 1 needs this for the globe) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Google Font: Orbitron for space headings, Inter for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <!-- Your stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+    HEADER
+    This is the top bar showing the ORBIT logo and tagline.
+  ============================================================ -->
+  <header class="header">
+    <div class="logo">ORBIT</div>
+    <p class="tagline">Every square meter of Earth has a space story. This is yours.</p>
+  </header>
+
+  <!-- ============================================================
+    GLOBE SECTION
+    Person 1 will put their interactive globe inside this div.
+    The id="globe-container" is important — don't change it.
+  ============================================================ -->
+  <section class="globe-section">
+    <div id="globe-container">
+      <!-- Person 1's globe goes here -->
+      <p class="globe-placeholder">🌍 Globe loads here</p>
+    </div>
+
+    <!-- Search bar for typing a city -->
+    <div class="search-bar">
+      <input type="text" id="location-input" placeholder="Search any city or drop a pin on the globe..." />
+      <button id="search-btn">Scan Sky</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+    COORDINATE DISPLAY
+    Shows the lat/long of wherever the user clicked or searched.
+    Person 2 will update the text inside these spans.
+  ============================================================ -->
+  <div class="coordinate-display">
+    <span>LAT: <strong id="lat-display">--</strong></span>
+    <span>LNG: <strong id="lng-display">--</strong></span>
+  </div>
+
+  <!-- ============================================================
+    ORBIT SCORE — THE CENTERPIECE
+    This is the big glowing circular gauge you will style.
+    The number inside (id="orbit-score-value") gets updated by Person 2.
+  ============================================================ -->
+  <section class="score-section">
+    <div class="orbit-score-container">
+      <svg class="score-ring" viewBox="0 0 200 200">
+        <!-- Background ring (always visible, dark) -->
+        <circle class="ring-bg" cx="100" cy="100" r="80" />
+        <!-- Foreground ring (this is the glowing arc — Person 2 animates stroke-dashoffset) -->
+        <circle class="ring-fill" id="score-ring-fill" cx="100" cy="100" r="80" />
+      </svg>
+      <div class="score-inner">
+        <span class="score-label">ORBIT SCORE</span>
+        <span class="score-value" id="orbit-score-value">--</span>
+        <span class="score-sublabel">/ 100</span>
+      </div>
+    </div>
+    <p class="score-description" id="score-description">Select a location to generate your cosmic score</p>
+  </section>
+
+  <!-- ============================================================
+    6 DASHBOARD CARDS
+    Each card shows one layer of data.
+    The id on each <p> tag is where Person 2 puts the real data.
+    You style these cards in style.css.
+  ============================================================ -->
+  <section class="dashboard">
+
+    <!-- Card 1: Sky Traffic -->
+    <div class="card" id="card-sky-traffic">
+      <div class="card-header">
+        <span class="card-icon">🛰️</span>
+        <h3 class="card-title">Sky Traffic</h3>
+      </div>
+      <p class="card-value" id="satellite-count">Loading...</p>
+      <p class="card-detail" id="satellite-detail">Satellites passing overhead</p>
+    </div>
+
+    <!-- Card 2: Space Weather -->
+    <div class="card" id="card-space-weather">
+      <div class="card-header">
+        <span class="card-icon">☀️</span>
+        <h3 class="card-title">Space Weather</h3>
+      </div>
+      <p class="card-value" id="kp-index">Loading...</p>
+      <p class="card-detail" id="kp-detail">Geomagnetic activity (Kp index)</p>
+    </div>
+
+    <!-- Card 3: Ground Impact History -->
+    <div class="card" id="card-impact">
+      <div class="card-header">
+        <span class="card-icon">☄️</span>
+        <h3 class="card-title">Impact History</h3>
+      </div>
+      <p class="card-value" id="crater-name">Loading...</p>
+      <p class="card-detail" id="crater-detail">Nearest meteor crater</p>
+    </div>
+
+    <!-- Card 4: Active Threat Watch -->
+    <div class="card" id="card-threats">
+      <div class="card-header">
+        <span class="card-icon">🪨</span>
+        <h3 class="card-title">Threat Watch</h3>
+      </div>
+      <p class="card-value" id="neo-count">Loading...</p>
+      <p class="card-detail" id="neo-detail">Near-Earth objects tracked</p>
+    </div>
+
+    <!-- Card 5: ISS Intelligence -->
+    <div class="card" id="card-iss">
+      <div class="card-header">
+        <span class="card-icon">🚀</span>
+        <h3 class="card-title">ISS Intelligence</h3>
+      </div>
+      <p class="card-value" id="iss-pass-time">Loading...</p>
+      <p class="card-detail" id="iss-detail">Next ISS pass over your location</p>
+    </div>
+
+    <!-- Card 6: Aurora Probability -->
+    <div class="card" id="card-aurora">
+      <div class="card-header">
+        <span class="card-icon">🌌</span>
+        <h3 class="card-title">Aurora Watch</h3>
+      </div>
+      <p class="card-value" id="aurora-probability">Loading...</p>
+      <p class="card-detail" id="aurora-detail">Aurora visibility probability</p>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+    SPECIAL FEATURES BAR
+  ============================================================ -->
+  <section class="features-bar">
+    <button class="feature-btn" onclick="openTimeMachine()">🕰️ Time Machine</button>
+    <button class="feature-btn" onclick="openBestSky()">🔭 Find My Best Sky</button>
+  </section>
+
+  <!-- TIME MACHINE PANEL (hidden by default) -->
+  <div class="feature-panel" id="time-machine-panel">
+    <h2 class="panel-title">🕰️ Time Machine</h2>
+    <p class="panel-subtitle">Pick any date and location — see exactly what was in the sky then.</p>
+    <div class="panel-inputs">
+      <input type="date" id="tm-date" class="panel-input" max="2026-06-11" />
+      <input type="text" id="tm-location" class="panel-input" placeholder="Location (e.g. Cape Canaveral, Florida)" />
+      <button class="panel-btn" onclick="runTimeMachine()">Travel Back →</button>
+    </div>
+    <div class="panel-examples">
+      <p class="examples-label">Try these:</p>
+      <button class="example-chip" onclick="setTimeMachine('1969-07-20','Cape Canaveral, Florida')">🚀 Moon Landing 1969</button>
+      <button class="example-chip" onclick="setTimeMachine('1986-01-28','Cape Canaveral, Florida')">💥 Challenger 1986</button>
+      <button class="example-chip" onclick="setTimeMachine('2001-09-11','New York City')">🗽 NYC Sep 11 2001</button>
+    </div>
+    <div id="tm-result" class="panel-result"></div>
+  </div>
+
+  <!-- FIND MY BEST SKY PANEL (hidden by default) -->
+  <div class="feature-panel" id="best-sky-panel">
+    <h2 class="panel-title">🔭 Find My Best Sky</h2>
+    <p class="panel-subtitle">Tell ORBIT what you want to see — it finds the best place on Earth right now.</p>
+    <div class="panel-checkboxes">
+      <label class="check-label"><input type="checkbox" id="want-iss" checked /> 🚀 ISS visible pass</label>
+      <label class="check-label"><input type="checkbox" id="want-aurora" /> 🌌 Aurora borealis</label>
+      <label class="check-label"><input type="checkbox" id="want-lowlight" /> ✨ Dark sky / no light pollution</label>
+    </div>
+    <button class="panel-btn" onclick="findBestSky()">Find Best Location →</button>
+    <div id="best-sky-result" class="panel-result"></div>
+  </div>
+
+  <!-- ============================================================
+    AI SPACE BRIEF
+    Person 2 will call the Claude API and put the result here.
+    This is the "it talks to you" feature that sets ORBIT apart.
+  ============================================================ -->
+  <section class="space-brief-section">
+    <h2 class="brief-title">⚡ Space Brief</h2>
+    <p class="brief-text" id="space-brief-text">
+      Select a location and ORBIT will generate your personalised cosmic intelligence report.
+    </p>
+  </section>
+
+  <!-- ============================================================
+    FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <p>ORBIT — Built for AstralWeb Innovate · Aaruush '26 · SRMIST</p>
+  </footer>
+
+  <!-- Scripts (load order matters — globe first, then api, then any extras) -->
+  <script src="globe.js"></script>
+  <script src="api.js"></script>
+  <script src="features.js"></script>
+  <script>
+    function setTimeMachine(date, location) {
+      document.getElementById("tm-date").value = date;
+      document.getElementById("tm-location").value = location;
+    }
+  </script>
+
+</body>
+</html>
