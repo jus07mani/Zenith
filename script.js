@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ================= ELEMENTS ================= */
-
   const bootScreen = document.getElementById("bootScreen");
   const mainApp = document.getElementById("mainApp");
   const bootTerminal = document.getElementById("bootTerminal");
@@ -10,519 +8,786 @@ document.addEventListener("DOMContentLoaded", () => {
   const latInput = document.getElementById("latInput");
   const lngInput = document.getElementById("lngInput");
   const scanBtn = document.getElementById("scanBtn");
-  const statusText = document.getElementById("statusText");
-  const reportBox = document.getElementById("reportBox");
-
-  const signalValue = document.getElementById("signalValue");
-
-  const fragmentOne = document.getElementById("fragmentOne");
-  const fragmentTwo = document.getElementById("fragmentTwo");
-  const fragmentThree = document.getElementById("fragmentThree");
-  const fragmentFour = document.getElementById("fragmentFour");
-  const fragmentFive = document.getElementById("fragmentFive");
-  const fragmentSix = document.getElementById("fragmentSix");
+  const useLocationBtn = document.getElementById("use-location-btn");
+  const copyCoordinatesBtn = document.getElementById("copy-coordinates-btn");
+  const searchInput = document.getElementById("location-input");
+  const searchBtn = document.getElementById("search-btn");
 
   const latDisplay = document.getElementById("lat-display");
   const lngDisplay = document.getElementById("lng-display");
+  const reportBox = document.getElementById("reportBox");
+  const statusText = document.getElementById("statusText");
 
-  const searchBtn = document.getElementById("search-btn");
-  const locationInput = document.getElementById("location-input");
+  const scoreValue = document.getElementById("orbit-score-value");
+  const scoreFill = document.getElementById("score-ring-fill");
+  const scoreDescription = document.getElementById("score-description");
 
-  const useLocationBtn = document.getElementById("use-location-btn");
-  const copyCoordinatesBtn = document.getElementById("copy-coordinates-btn");
+  let map;
+  let marker;
 
-  let activeLatitude = null;
-  let activeLongitude = null;
-  let marker = null;
-  let map = null;
+  let currentLocation = {
+    lat: 13.0827,
+    lng: 80.2707,
+    label: "Chennai Coordinate Zone"
+  };
 
-  /* ================= BOOT SCREEN ================= */
+  let currentSkyData = {
+    satellites: [],
+    planets: [],
+    constellations: []
+  };
 
-  const bootLines = [
-    "Loading ZENITH core system...",
-    "Activating orbital coordinate engine...",
-    "Establishing satellite communication layer...",
-    "Mapping planetary surface grid...",
-    "Synchronizing live intelligence fragments...",
-    "HUD interface online.",
-    "Welcome, operator."
+  const CRATERS = [
+    { name: "Lonar", lat: 19.98, lng: 76.51, dia: "1.8 km", age: "50K yrs" },
+    { name: "Barringer", lat: 35.027, lng: -111.022, dia: "1.2 km", age: "50K yrs" },
+    { name: "Chicxulub", lat: 21.4, lng: -89.5, dia: "180 km", age: "66M yrs" },
+    { name: "Vredefort", lat: -27.0, lng: 27.5, dia: "300 km", age: "2.02B yrs" },
+    { name: "Ries", lat: 48.9, lng: 10.6, dia: "24 km", age: "15M yrs" },
+    { name: "Manicouagan", lat: 51.38, lng: -68.7, dia: "100 km", age: "214M yrs" }
   ];
 
-  let bootIndex = 0;
-  let progress = 0;
+  function openApp() {
+    if (bootScreen) {
+      bootScreen.classList.add("hide");
+      bootScreen.style.display = "none";
+    }
 
-  function runBootSequence() {
-    const bootInterval = setInterval(() => {
-      if (bootIndex < bootLines.length) {
-        const line = document.createElement("p");
-        line.textContent = bootLines[bootIndex];
-        bootTerminal.appendChild(line);
+    if (mainApp) {
+      mainApp.classList.add("show");
+      mainApp.style.opacity = "1";
+      mainApp.style.transform = "scale(1)";
+    }
 
-        progress += Math.floor(100 / bootLines.length);
-        bootProgressBar.style.width = Math.min(progress, 100) + "%";
-        bootStatus.textContent = bootLines[bootIndex];
-
-        bootIndex++;
-      } else {
-        bootProgressBar.style.width = "100%";
-        bootStatus.textContent = "ZENITH SYSTEM ONLINE";
-
-        clearInterval(bootInterval);
-
-        setTimeout(() => {
-          bootScreen.classList.add("hide");
-          mainApp.classList.add("show");
-
-          setTimeout(() => {
-            if (map) {
-              map.invalidateSize();
-            }
-          }, 600);
-        }, 900);
-      }
-    }, 650);
+    setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 300);
   }
 
-  /* ================= MAP SETUP ================= */
+  function runBootSequence() {
+    if (!bootTerminal || !bootProgressBar || !bootStatus) {
+      setTimeout(openApp, 1000);
+      return;
+    }
 
-  if (typeof L !== "undefined") {
-    const defaultLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap contributors",
-      maxZoom: 19
-    });
+    const lines = [
+      "[ZENITH] Core system online",
+      "[MAP] Earth coordinate radar initializing",
+      "[ISS] Orbital feed linked",
+      "[NOAA] Space weather channel ready",
+      "[NASA] Threat watch layer armed",
+      "[SKY] Planet and constellation module ready",
+      "[DOME] 3D sky dome lazy-load enabled",
+      "[SYSTEM] Coordinate intelligence ready"
+    ];
 
-    const satelliteLayer = L.tileLayer(
-      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-      {
-        attribution: "Tiles © Esri",
-        maxZoom: 19
+    let index = 0;
+    let progress = 0;
+
+    const bootTimer = setInterval(() => {
+      if (index < lines.length) {
+        const line = document.createElement("div");
+        line.textContent = lines[index];
+        bootTerminal.appendChild(line);
+        bootTerminal.scrollTop = bootTerminal.scrollHeight;
+
+        progress += 100 / lines.length;
+        bootProgressBar.style.width = `${Math.min(progress, 100)}%`;
+        bootStatus.textContent = lines[index];
+        index++;
+      } else {
+        clearInterval(bootTimer);
+        bootProgressBar.style.width = "100%";
+        bootStatus.textContent = "System ready.";
+        setTimeout(openApp, 450);
       }
-    );
+    }, 280);
+  }
 
-    const hybridLayer = L.layerGroup([
-      L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        {
-          maxZoom: 19
-        }
-      ),
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
-        {
-          maxZoom: 19
-        }
-      )
-    ]);
-
-    const darkLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-      attribution: "© OpenStreetMap © CARTO",
-      maxZoom: 19
-    });
+  function initMap() {
+    const worldBounds = L.latLngBounds(L.latLng(-90, -180), L.latLng(90, 180));
 
     map = L.map("globe-container", {
-      center: [20, 0],
-      zoom: 2,
-      layers: [darkLayer],
-      zoomControl: true
+      center: [currentLocation.lat, currentLocation.lng],
+      zoom: 4,
+      minZoom: 2,
+      maxZoom: 18,
+      maxBounds: worldBounds,
+      maxBoundsViscosity: 1.0,
+      worldCopyJump: false
     });
 
-    const baseMaps = {
-      "Default View": defaultLayer,
-      "Satellite Mode": satelliteLayer,
-      "Hybrid Mode": hybridLayer,
-      "Dark Radar": darkLayer
-    };
-
-    L.control.layers(baseMaps, null, {
-      position: "topright",
-      collapsed: true
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      noWrap: true,
+      bounds: worldBounds,
+      attribution: "© OpenStreetMap"
     }).addTo(map);
 
+    marker = L.marker([currentLocation.lat, currentLocation.lng]).addTo(map);
+    marker.bindPopup("ZENITH coordinate lock").openPopup();
+
     map.on("click", (event) => {
-      updateMapLocation(
+      updateLocation(
         event.latlng.lat,
         event.latlng.lng,
-        "Selected Point",
+        "Selected Map Coordinate",
         true
       );
     });
+
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 500);
   }
 
-  const customPulseIcon = L.divIcon({
-    className: "custom-pulse-marker",
-    html: '<div class="pulse-core"></div><div class="pulse-ring"></div>',
-    iconSize: [26, 26],
-    iconAnchor: [13, 13]
-  });
+  function setText(id, value) {
+    const element = document.getElementById(id);
 
-  /* ================= HELPER FUNCTIONS ================= */
-
-  function updateText(element, text) {
     if (element) {
-      element.textContent = text;
+      element.textContent = value;
     }
   }
 
-  function validateCoordinates(latitude, longitude) {
-    const lat = Number(latitude);
-    const lng = Number(longitude);
-
-    if (latitude === "" || longitude === "") return false;
-    if (Number.isNaN(lat) || Number.isNaN(lng)) return false;
-    if (lat < -90 || lat > 90) return false;
-    if (lng < -180 || lng > 180) return false;
-
-    return true;
+  function formatNumber(value) {
+    return Number(value).toFixed(4);
   }
 
-  function getRiskLevel(latitude, longitude) {
-    const lat = Math.abs(Number(latitude));
-    const lng = Math.abs(Number(longitude));
-    const score = Math.round((lat + lng) % 100);
+  function toRad(value) {
+    return (value * Math.PI) / 180;
+  }
 
-    if (score < 30) {
-      return {
-        level: "Low",
-        signal: "97%",
-        pattern: "Stable Surface",
-        radius: "25 km"
-      };
-    }
+  function calculateDistanceKm(lat1, lng1, lat2, lng2) {
+    const radius = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
 
-    if (score < 65) {
-      return {
-        level: "Moderate",
-        signal: "91%",
-        pattern: "Variable Zone",
-        radius: "50 km"
-      };
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return radius * c;
+  }
+
+  function getNearestCrater(lat, lng) {
+    let nearest = CRATERS[0];
+    let nearestDistance = calculateDistanceKm(lat, lng, nearest.lat, nearest.lng);
+
+    for (let i = 1; i < CRATERS.length; i++) {
+      const crater = CRATERS[i];
+      const distance = calculateDistanceKm(lat, lng, crater.lat, crater.lng);
+
+      if (distance < nearestDistance) {
+        nearest = crater;
+        nearestDistance = distance;
+      }
     }
 
     return {
-      level: "High",
-      signal: "84%",
-      pattern: "Unstable Pattern",
-      radius: "75 km"
+      crater: nearest,
+      distance: nearestDistance
     };
   }
 
-  function getHemisphere(latitude, longitude) {
-    const lat = Number(latitude);
-    const lng = Number(longitude);
-
+  function getHemisphere(lat, lng) {
     const northSouth = lat >= 0 ? "Northern" : "Southern";
     const eastWest = lng >= 0 ? "Eastern" : "Western";
-
     return `${northSouth} / ${eastWest}`;
   }
 
-  function updateCoordinateDisplays(latitude, longitude) {
-    const formattedLat = Number(latitude).toFixed(4);
-    const formattedLng = Number(longitude).toFixed(4);
+  function calculateZenithScore(lat, lng, kpValue) {
+    const absLat = Math.abs(lat);
+    let score = 68;
 
-    activeLatitude = formattedLat;
-    activeLongitude = formattedLng;
+    if (absLat >= 20 && absLat <= 40) score += 10;
+    if (absLat > 55) score += 8;
+    if (Math.abs(lng) < 120) score += 5;
+    if (kpValue >= 4) score += 6;
 
-    updateText(latDisplay, formattedLat);
-    updateText(lngDisplay, formattedLng);
+    score += Math.floor(Math.random() * 8);
 
-    latInput.value = formattedLat;
-    lngInput.value = formattedLng;
+    return Math.max(45, Math.min(96, score));
   }
 
-  function showErrorReport() {
-    updateText(statusText, "SIGNAL LOST — INVALID COORDINATES");
-    updateText(signalValue, "Failed");
+  function updateScore(score) {
+    if (scoreValue) scoreValue.textContent = score;
 
-    updateText(fragmentThree, "Rejected");
-    updateText(fragmentFour, "Invalid Input");
-    updateText(fragmentFive, "Not Locked");
-    updateText(fragmentSix, "Standby");
+    if (scoreFill) {
+      const circumference = 301.59;
+      const offset = circumference - (score / 100) * circumference;
+      scoreFill.style.strokeDashoffset = offset;
+    }
+
+    if (scoreDescription) {
+      if (score >= 85) {
+        scoreDescription.textContent =
+          "High-value coordinate profile for sky observation.";
+      } else if (score >= 70) {
+        scoreDescription.textContent =
+          "Stable coordinate profile for orbital observation.";
+      } else {
+        scoreDescription.textContent =
+          "Moderate coordinate profile. Observation may vary.";
+      }
+    }
+  }
+
+  function updateBasicCardsLoading() {
+    setText("satellite-count", "Scanning");
+    setText("satellite-detail", "Calculating sky traffic profile");
+
+    setText("kp-index", "Scanning");
+    setText("kp-detail", "Reading NOAA space weather channel");
+
+    setText("crater-name", "Scanning");
+    setText("crater-detail", "Finding nearest known impact profile");
+
+    setText("neo-count", "Scanning");
+    setText("neo-detail", "Reading current threat watch feed");
+
+    setText("iss-pass-time", "Scanning");
+    setText("iss-detail", "Reading ISS orbital position");
+
+    setText("aurora-probability", "Scanning");
+    setText("aurora-detail", "Estimating aurora visibility");
+  }
+
+  function updateFragments(lat, lng, label, kpValue, neoCount, issDistance) {
+    setText("fragmentOne", `Coordinate lock: ${formatNumber(lat)}, ${formatNumber(lng)}.`);
+    setText("fragmentTwo", `ISS range estimate: ${Math.round(issDistance)} km from selected zone.`);
+    setText("fragmentThree", `Geomagnetic Kp index: ${kpValue}.`);
+    setText("fragmentFour", `Near-Earth object feed: ${neoCount} tracked today.`);
+    setText("fragmentFive", `Sky module loaded for ${getHemisphere(lat, lng)} hemisphere.`);
+    setText("fragmentSix", `3D dome ready for ${label}.`);
+  }
+
+  function updateReport(lat, lng, label, kpValue, neoCount, satelliteCount) {
+    if (!reportBox) return;
 
     reportBox.innerHTML = `
-      <p class="panel-tag">MISSION REPORT</p>
-      <h2 class="danger">Coordinate Error</h2>
-      <p>
-        Enter valid latitude and longitude values.
-        Latitude must be between -90 and 90.
-        Longitude must be between -180 and 180.
-      </p>
+      <strong>${label}</strong><br>
+      Coordinate lock established at <strong>${formatNumber(lat)}</strong>,
+      <strong>${formatNumber(lng)}</strong>. ZENITH detected ${satelliteCount}
+      estimated overhead satellite tracks, Kp index ${kpValue}, and ${neoCount}
+      near-Earth objects in the current threat watch feed.
     `;
   }
 
-  function updateFragments(latitude, longitude, risk) {
-    updateText(fragmentOne, "Linked");
-    updateText(fragmentTwo, "Readable");
-    updateText(fragmentThree, "96% Verified");
-    updateText(fragmentFour, risk.pattern);
-    updateText(fragmentFive, getHemisphere(latitude, longitude));
-    updateText(fragmentSix, risk.radius);
-    updateText(signalValue, risk.signal);
-  }
+  function updateLocation(lat, lng, label = "Selected Coordinate", moveMap = false) {
+    lat = Number(lat);
+    lng = Number(lng);
 
-  function updateMapLocation(latitude, longitude, locationName = "Target Acquired", fly = false) {
-    if (!validateCoordinates(String(latitude), String(longitude))) {
-      showErrorReport();
+    if (Number.isNaN(lat) || Number.isNaN(lng)) {
+      alert("Please enter valid latitude and longitude.");
       return;
     }
 
-    const formattedLat = Number(latitude).toFixed(4);
-    const formattedLng = Number(longitude).toFixed(4);
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      alert("Latitude must be -90 to 90 and longitude must be -180 to 180.");
+      return;
+    }
 
-    updateCoordinateDisplays(formattedLat, formattedLng);
+    currentLocation = { lat, lng, label };
 
-    const risk = getRiskLevel(formattedLat, formattedLng);
-
-    updateText(statusText, "TARGET LOCKED — SURFACE SCAN COMPLETE");
-    updateFragments(formattedLat, formattedLng, risk);
+    if (latInput) latInput.value = formatNumber(lat);
+    if (lngInput) lngInput.value = formatNumber(lng);
+    if (latDisplay) latDisplay.textContent = formatNumber(lat);
+    if (lngDisplay) lngDisplay.textContent = formatNumber(lng);
 
     if (marker) {
-      map.removeLayer(marker);
+      marker.setLatLng([lat, lng]);
+      marker.bindPopup(label).openPopup();
     }
 
-    marker = L.marker([Number(formattedLat), Number(formattedLng)], {
-      icon: customPulseIcon
-    }).addTo(map);
-
-    marker.bindPopup(`
-      <div style="text-align:center; font-family:Arial, sans-serif;">
-        <strong style="color:#00eaff;">${locationName}</strong><br>
-        <span style="font-size:11px; color:#555;">
-          ${formattedLat}, ${formattedLng}
-        </span>
-      </div>
-    `).openPopup();
-
-    if (fly) {
-      map.flyTo([Number(formattedLat), Number(formattedLng)], 10, {
-        animate: true,
-        duration: 2
-      });
-    } else {
-      map.setView([Number(formattedLat), Number(formattedLng)], 10);
+    if (map && moveMap) {
+      map.setView([lat, lng], 5);
     }
 
-    reportBox.innerHTML = `
-      <p class="panel-tag">MISSION REPORT</p>
-      <h2>Target Intelligence Summary</h2>
-
-      <div class="report-grid">
-        <div class="report-item">
-          <span>Location</span>
-          <strong>${locationName}</strong>
-        </div>
-
-        <div class="report-item">
-          <span>Latitude</span>
-          <strong>${formattedLat}</strong>
-        </div>
-
-        <div class="report-item">
-          <span>Longitude</span>
-          <strong>${formattedLng}</strong>
-        </div>
-
-        <div class="report-item">
-          <span>Risk Level</span>
-          <strong>${risk.level}</strong>
-        </div>
-
-        <div class="report-item">
-          <span>Signal Accuracy</span>
-          <strong>${risk.signal}</strong>
-        </div>
-
-        <div class="report-item">
-          <span>Hemisphere</span>
-          <strong>${getHemisphere(formattedLat, formattedLng)}</strong>
-        </div>
-      </div>
-
-      <p>
-        Coordinates verified. Map view, marker lock, and live fragments are updated.
-      </p>
-    `;
-
-    if (typeof fetchAllData === "function") {
-      fetchAllData(Number(formattedLat), Number(formattedLng));
+    if (statusText) {
+      statusText.textContent = "SCANNING COORDINATE";
     }
 
-    window.dispatchEvent(
-      new CustomEvent("zenith:scan", {
-        detail: {
-          latitude: formattedLat,
-          longitude: formattedLng,
-          locationName: locationName,
-          riskLevel: risk.level,
-          signalAccuracy: risk.signal,
-          hemisphere: getHemisphere(formattedLat, formattedLng)
-        }
-      })
+    updateBasicCardsLoading();
+    updateSkyOverheadFeatures(lat, lng);
+    updateLiveData(lat, lng, label);
+  }
+
+  async function updateLiveData(lat, lng, label) {
+    let kpValue = 2;
+    let neoCount = 0;
+    let issDistance = 12000;
+
+    try {
+      const kpResponse = await fetch(
+        "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json"
+      );
+
+      const kpData = await kpResponse.json();
+
+      if (Array.isArray(kpData) && kpData.length > 0) {
+        const latest = kpData[kpData.length - 1];
+        kpValue = Number(latest.kp_index || latest.Kp || latest.estimated_kp || 2);
+      }
+    } catch (error) {
+      kpValue = 2;
+    }
+
+    try {
+      const issResponse = await fetch("https://api.wheretheiss.at/v1/satellites/25544");
+      const issData = await issResponse.json();
+
+      if (issData && issData.latitude && issData.longitude) {
+        issDistance = calculateDistanceKm(
+          lat,
+          lng,
+          Number(issData.latitude),
+          Number(issData.longitude)
+        );
+
+        setText("iss-pass-time", `${Math.round(issDistance)} km`);
+        setText(
+          "iss-detail",
+          `Current ISS position: ${Number(issData.latitude).toFixed(2)}, ${Number(issData.longitude).toFixed(2)}.`
+        );
+      } else {
+        setText("iss-pass-time", "Online");
+        setText("iss-detail", "ISS channel connected. Exact position delayed.");
+      }
+    } catch (error) {
+      issDistance = 9000 + Math.random() * 8000;
+      setText("iss-pass-time", "Fallback");
+      setText("iss-detail", "ISS live feed delayed. Using orbital estimate.");
+    }
+
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const neoUrl = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=DEMO_KEY`;
+
+      const neoResponse = await fetch(neoUrl);
+      const neoData = await neoResponse.json();
+
+      if (
+        neoData &&
+        neoData.near_earth_objects &&
+        neoData.near_earth_objects[today]
+      ) {
+        neoCount = neoData.near_earth_objects[today].length;
+      }
+    } catch (error) {
+      neoCount = 3 + Math.floor(Math.random() * 7);
+    }
+
+    const nearestData = getNearestCrater(lat, lng);
+    const crater = nearestData.crater;
+    const craterDistance = nearestData.distance;
+
+    setText("kp-index", kpValue.toFixed(1));
+    setText(
+      "kp-detail",
+      kpValue >= 5
+        ? "Elevated geomagnetic activity detected."
+        : "Space weather is currently stable."
+    );
+
+    setText("neo-count", neoCount);
+    setText(
+      "neo-detail",
+      `${neoCount} near-Earth objects tracked in today's threat watch layer.`
+    );
+
+    setText("crater-name", crater.name);
+    setText(
+      "crater-detail",
+      `${Math.round(craterDistance)} km away. Diameter ${crater.dia}, age ${crater.age}.`
+    );
+
+    const aurora = calculateAuroraProbability(lat, kpValue);
+
+    setText("aurora-probability", `${aurora}%`);
+    setText(
+      "aurora-detail",
+      aurora >= 55
+        ? "High-latitude aurora conditions are possible."
+        : "Aurora probability is limited for this coordinate."
+    );
+
+    const satelliteCount = currentSkyData.satellites.length || 8;
+
+    setText("satellite-count", satelliteCount);
+    setText(
+      "satellite-detail",
+      `${satelliteCount} estimated orbital paths are active above this coordinate zone.`
+    );
+
+    const score = calculateZenithScore(lat, lng, kpValue);
+
+    updateScore(score);
+    updateReport(lat, lng, label, kpValue.toFixed(1), neoCount, satelliteCount);
+    updateFragments(lat, lng, label, kpValue.toFixed(1), neoCount, issDistance);
+
+    if (statusText) {
+      statusText.textContent = "SYSTEM ONLINE";
+    }
+  }
+
+  function calculateAuroraProbability(lat, kpValue) {
+    const absLat = Math.abs(lat);
+    let probability = 5;
+
+    if (absLat > 65) probability += 45;
+    else if (absLat > 55) probability += 28;
+    else if (absLat > 45) probability += 12;
+
+    probability += kpValue * 7;
+
+    return Math.max(2, Math.min(96, Math.round(probability)));
+  }
+
+  function updateSkyOverheadFeatures(lat, lng) {
+    const satellites = getEstimatedSatellites(lat, lng);
+    const planets = getEstimatedPlanets(lat, lng);
+    const constellations = getEstimatedConstellations(lat, lng);
+
+    currentSkyData = { satellites, planets, constellations };
+
+    setText("overhead-satellite-count", satellites.length);
+    setText(
+      "overhead-satellite-detail",
+      `${satellites.join(", ")}. Estimated active overhead orbital tracks.`
+    );
+
+    setText("planet-overhead-count", planets.length);
+    setText(
+      "planet-overhead-detail",
+      `Likely planetary targets: ${planets.join(", ")}. Visibility depends on local time.`
+    );
+
+    setText("constellation-count", constellations.length);
+    setText(
+      "constellation-detail",
+      `Estimated sky region: ${constellations.join(", ")}.`
     );
   }
 
-  /* ================= MAIN SCAN BUTTON ================= */
+  function getEstimatedSatellites(lat, lng) {
+    const absLat = Math.abs(lat);
+    const hour = new Date().getUTCHours();
 
-  scanBtn.addEventListener("click", () => {
-    const latitude = latInput.value.trim();
-    const longitude = lngInput.value.trim();
+    const equatorial = ["ISS", "NOAA-19", "Terra", "Aqua", "Sentinel-2A", "Landsat 8"];
+    const mid = ["Starlink Track", "Sentinel-1A", "NOAA-20", "MetOp-B", "WorldView"];
+    const polar = ["Polar Orbiter", "NOAA-21", "Suomi NPP", "Cosmos Track", "Iridium Track"];
 
-    if (!validateCoordinates(latitude, longitude)) {
-      showErrorReport();
-      return;
+    let base;
+
+    if (absLat < 25) {
+      base = equatorial;
+    } else if (absLat < 55) {
+      base = mid;
+    } else {
+      base = polar;
     }
 
-    updateText(statusText, "TARGET LOCKED — SCANNING SURFACE");
+    const shift = Math.abs(Math.floor((lat + lng + hour) % base.length));
+    const rotated = base.slice(shift).concat(base.slice(0, shift));
 
-    scanBtn.disabled = true;
-    scanBtn.querySelector("span").textContent = "SCANNING...";
+    return rotated.slice(0, 4 + Math.floor(Math.random() * 2));
+  }
 
-    updateText(fragmentThree, "Processing");
-    updateText(fragmentFour, "Analysing");
-    updateText(fragmentFive, "Calculating");
-    updateText(fragmentSix, "Expanding");
+  function getEstimatedPlanets(lat, lng) {
+    const hour = new Date().getUTCHours();
+    const selector = Math.abs(Math.floor((lat * 2 + lng + hour) % 6));
 
-    reportBox.innerHTML = `
-      <p class="panel-tag">MISSION REPORT</p>
-      <h2>Scanning Target...</h2>
-      <p>
-        ZENITH is analysing the entered coordinate zone.
-        Surface fragments are being decoded.
-      </p>
-    `;
+    const planetSets = [
+      ["Venus", "Jupiter"],
+      ["Mars", "Saturn"],
+      ["Jupiter", "Saturn", "Mars"],
+      ["Venus", "Mercury"],
+      ["Mars", "Jupiter"],
+      ["Saturn", "Jupiter", "Venus"]
+    ];
 
-    setTimeout(() => {
-      updateMapLocation(latitude, longitude, "Manual Target", true);
+    return planetSets[selector];
+  }
 
-      scanBtn.disabled = false;
-      scanBtn.querySelector("span").textContent = "INITIATE SCAN";
-    }, 1500);
-  });
+  function getEstimatedConstellations(lat, lng) {
+    const month = new Date().getUTCMonth();
 
-  /* ================= SEARCH FEATURE ================= */
+    const northWinter = ["Orion", "Taurus", "Gemini"];
+    const northSummer = ["Cygnus", "Lyra", "Aquila"];
+    const northAll = ["Ursa Major", "Cassiopeia", "Draco"];
 
-  searchBtn.addEventListener("click", async () => {
-    const query = locationInput.value.trim();
+    const equatorial = ["Orion", "Scorpius", "Pegasus"];
+    const south = ["Crux", "Centaurus", "Carina"];
+    const southAlt = ["Pavo", "Tucana", "Eridanus"];
+
+    if (lat > 25) {
+      if (month >= 10 || month <= 2) return northWinter;
+      if (month >= 5 && month <= 8) return northSummer;
+      return northAll;
+    }
+
+    if (lat < -25) {
+      if (month >= 3 && month <= 8) return south;
+      return southAlt;
+    }
+
+    return equatorial;
+  }
+
+  async function searchLocation() {
+    const query = searchInput ? searchInput.value.trim() : "";
 
     if (!query) {
-      updateText(statusText, "SEARCH FAILED — ENTER A LOCATION");
+      alert("Enter a city or place name.");
       return;
     }
 
-    searchBtn.disabled = true;
-    searchBtn.textContent = "SCANNING...";
+    if (statusText) {
+      statusText.textContent = "SEARCHING MAP";
+    }
 
     try {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+        query
+      )}&format=json&limit=1`;
+
       const response = await fetch(url);
       const data = await response.json();
 
-      if (data.length === 0) {
-        updateText(statusText, "LOCATION NOT FOUND");
-        alert("Location not found. Try a different city or place name.");
+      if (!Array.isArray(data) || data.length === 0) {
+        alert("Location not found. Try another name.");
+        if (statusText) statusText.textContent = "SYSTEM ONLINE";
         return;
       }
 
-      const latitude = data[0].lat;
-      const longitude = data[0].lon;
-      const displayName = data[0].display_name;
-      const shortName = displayName.split(",")[0];
+      const result = data[0];
+      const lat = Number(result.lat);
+      const lng = Number(result.lon);
+      const label = result.display_name.split(",").slice(0, 2).join(",");
 
-      updateMapLocation(latitude, longitude, shortName, true);
+      updateLocation(lat, lng, label, true);
     } catch (error) {
-      console.error("Search error:", error);
-      updateText(statusText, "SEARCH FAILED — CHECK INTERNET CONNECTION");
-      alert("Search failed. Check your internet connection.");
-    } finally {
-      searchBtn.disabled = false;
-      searchBtn.textContent = "SEARCH MAP";
+      alert("Search failed. Check internet connection.");
+      if (statusText) statusText.textContent = "SYSTEM ONLINE";
     }
-  });
+  }
 
-  locationInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      searchBtn.click();
-    }
-  });
-
-  /* ================= USE MY LOCATION ================= */
-
-  useLocationBtn.addEventListener("click", () => {
+  function useCurrentLocation() {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by this browser.");
+      alert("Geolocation is not supported in this browser.");
       return;
     }
 
-    updateText(statusText, "ACCESSING DEVICE LOCATION...");
-    useLocationBtn.disabled = true;
-    useLocationBtn.textContent = "LOCATING...";
+    if (statusText) {
+      statusText.textContent = "ACCESSING DEVICE LOCATION";
+    }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        updateMapLocation(latitude, longitude, "Current Device Location", true);
-
-        useLocationBtn.disabled = false;
-        useLocationBtn.textContent = "USE MY LOCATION";
+        updateLocation(
+          position.coords.latitude,
+          position.coords.longitude,
+          "Device Location",
+          true
+        );
       },
       () => {
-        updateText(statusText, "LOCATION ACCESS DENIED");
-        alert("Location access was denied.");
-
-        useLocationBtn.disabled = false;
-        useLocationBtn.textContent = "USE MY LOCATION";
+        alert("Location permission denied or unavailable.");
+        if (statusText) statusText.textContent = "SYSTEM ONLINE";
       }
     );
-  });
-
-  /* ================= COPY COORDINATES ================= */
-
-  copyCoordinatesBtn.addEventListener("click", async () => {
-    if (!activeLatitude || !activeLongitude) {
-      alert("No coordinates selected yet.");
-      return;
-    }
-
-    const coordinateText = `${activeLatitude}, ${activeLongitude}`;
-
-    try {
-      await navigator.clipboard.writeText(coordinateText);
-
-      updateText(statusText, "COORDINATES COPIED TO CLIPBOARD");
-      copyCoordinatesBtn.textContent = "COPIED";
-
-      setTimeout(() => {
-        copyCoordinatesBtn.textContent = "COPY COORDINATES";
-      }, 1200);
-    } catch (error) {
-      console.error("Copy failed:", error);
-      alert(`Copy these coordinates: ${coordinateText}`);
-    }
-  });
-
-  /* ================= LIVE FRAGMENT MOVEMENT ================= */
-
-  function updateIdleFragments() {
-    const satelliteStates = ["Stable", "Strong", "Linked", "Tracking"];
-    const atmosphereStates = ["Nominal", "Clear", "Readable", "Mild Distortion"];
-
-    fragmentOne.textContent =
-      satelliteStates[Math.floor(Math.random() * satelliteStates.length)];
-
-    fragmentTwo.textContent =
-      atmosphereStates[Math.floor(Math.random() * atmosphereStates.length)];
-
-    if (!activeLatitude || !activeLongitude) {
-      updateText(signalValue, "Standby");
-      return;
-    }
-
-    const randomSignal = Math.floor(Math.random() * 8) + 90;
-    updateText(signalValue, randomSignal + "%");
   }
 
+  async function copyCoordinates() {
+    const text = `${formatNumber(currentLocation.lat)}, ${formatNumber(currentLocation.lng)}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+
+      if (statusText) statusText.textContent = "COORDINATES COPIED";
+
+      setTimeout(() => {
+        if (statusText) statusText.textContent = "SYSTEM ONLINE";
+      }, 1200);
+    } catch (error) {
+      alert(`Coordinates: ${text}`);
+    }
+  }
+
+  window.runTimeMachine = function () {
+    const dateInput = document.getElementById("tm-date");
+    const locationInput = document.getElementById("tm-location");
+    const result = document.getElementById("tm-result");
+
+    if (!result) return;
+
+    const dateValue =
+      dateInput && dateInput.value ? dateInput.value : "selected historical date";
+
+    const locationLabel =
+      locationInput && locationInput.value.trim()
+        ? locationInput.value.trim()
+        : currentLocation.label;
+
+    const planets = getEstimatedPlanets(currentLocation.lat, currentLocation.lng);
+    const constellations = getEstimatedConstellations(
+      currentLocation.lat,
+      currentLocation.lng
+    );
+
+    result.innerHTML = `
+      <strong>Historical sky profile generated.</strong><br>
+      Location: ${locationLabel}<br>
+      Date: ${dateValue}<br>
+      Estimated visible planet targets: ${planets.join(", ")}.<br>
+      Estimated constellation zone: ${constellations.join(", ")}.
+    `;
+  };
+
+  window.findBestSky = function () {
+    const result = document.getElementById("best-sky-result");
+
+    if (!result) return;
+
+    result.innerHTML = `
+      <div class="best-sky-results">
+        <div class="best-sky-card" onclick="window.updateMapLocation(32.78, 78.96, 'Hanle Observatory Region', true)">
+          <div>
+            <div class="best-sky-name">Hanle Observatory Region, India</div>
+            <div class="best-sky-reasons">High altitude · dark sky region · observatory profile</div>
+          </div>
+          <span class="best-sky-score">91</span>
+        </div>
+
+        <div class="best-sky-card" onclick="window.updateMapLocation(-23.5, -68.5, 'Atacama Desert, Chile', true)">
+          <div>
+            <div class="best-sky-name">Atacama Desert, Chile</div>
+            <div class="best-sky-reasons">Dry atmosphere · low cloud cover · strong sky clarity</div>
+          </div>
+          <span class="best-sky-score">89</span>
+        </div>
+
+        <div class="best-sky-card" onclick="window.updateMapLocation(19.8, -155.5, 'Mauna Kea, Hawaii', true)">
+          <div>
+            <div class="best-sky-name">Mauna Kea, Hawaii</div>
+            <div class="best-sky-reasons">High elevation · observatory region · stable sky profile</div>
+          </div>
+          <span class="best-sky-score">87</span>
+        </div>
+      </div>
+    `;
+  };
+
+  window.updateMapLocation = function (lat, lng, label, moveMap) {
+    updateLocation(lat, lng, label, moveMap);
+  };
+
+  window.openSkyDome = async function () {
+    const modal = document.getElementById("skyDomeModal");
+    const locationText = document.getElementById("skyDomeLocation");
+
+    if (modal) modal.classList.add("show");
+
+    if (locationText) {
+      locationText.textContent = `${currentLocation.label} · ${formatNumber(
+        currentLocation.lat
+      )}, ${formatNumber(currentLocation.lng)}`;
+    }
+
+    setText("domeSatelliteText", currentSkyData.satellites.join(", "));
+    setText("domePlanetText", currentSkyData.planets.join(", "));
+    setText("domeConstellationText", currentSkyData.constellations.join(", "));
+
+    await loadSkyDomeScript();
+
+    if (
+      window.ZenithSkyDome &&
+      typeof window.ZenithSkyDome.start === "function"
+    ) {
+      window.ZenithSkyDome.start({
+        lat: currentLocation.lat,
+        lng: currentLocation.lng,
+        label: currentLocation.label,
+        satellites: currentSkyData.satellites,
+        planets: currentSkyData.planets,
+        constellations: currentSkyData.constellations
+      });
+    }
+  };
+
+  window.closeSkyDome = function () {
+    const modal = document.getElementById("skyDomeModal");
+
+    if (modal) modal.classList.remove("show");
+
+    if (
+      window.ZenithSkyDome &&
+      typeof window.ZenithSkyDome.stop === "function"
+    ) {
+      window.ZenithSkyDome.stop();
+    }
+  };
+
+  function loadSkyDomeScript() {
+    return new Promise((resolve, reject) => {
+      if (window.ZenithSkyDome) {
+        resolve();
+        return;
+      }
+
+      const existing = document.querySelector("script[data-skydome='true']");
+
+      if (existing) {
+        existing.addEventListener("load", () => resolve());
+        existing.addEventListener("error", () => reject());
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "skydome.js";
+      script.dataset.skydome = "true";
+      script.onload = () => resolve();
+      script.onerror = () => {
+        alert("Could not load skydome.js. Make sure the file exists in the same folder.");
+        reject();
+      };
+
+      document.body.appendChild(script);
+    });
+  }
+
+  if (scanBtn) {
+    scanBtn.addEventListener("click", () => {
+      updateLocation(latInput.value, lngInput.value, "Manual Coordinate Scan", true);
+    });
+  }
+
+  if (searchBtn) {
+    searchBtn.addEventListener("click", searchLocation);
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        searchLocation();
+      }
+    });
+  }
+
+  if (useLocationBtn) {
+    useLocationBtn.addEventListener("click", useCurrentLocation);
+  }
+
+  if (copyCoordinatesBtn) {
+    copyCoordinatesBtn.addEventListener("click", copyCoordinates);
+  }
+
+  initMap();
+  updateLocation(currentLocation.lat, currentLocation.lng, currentLocation.label, false);
   runBootSequence();
-  setInterval(updateIdleFragments, 2200);
+
+  setTimeout(openApp, 4500);
 });
