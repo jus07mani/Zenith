@@ -2,218 +2,342 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ORBIT — Earth's Real-Time Space Intelligence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Leaflet map library (Person 1 needs this for the globe) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <title>ZENITH | Celestial Coordinate Intelligence</title>
 
-  <!-- Google Font: Orbitron for space headings, Inter for body text -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
-
-  <!-- Your stylesheet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <section id="bootScreen" class="boot-screen">
+    <div class="boot-card">
+      <h1>ZENITH</h1>
+      <p>Celestial Coordinate Intelligence System</p>
 
-  <!-- ============================================================
-    HEADER
-    This is the top bar showing the ORBIT logo and tagline.
-  ============================================================ -->
-  <header class="header">
-    <div class="logo">ORBIT</div>
-    <p class="tagline">Every square meter of Earth has a space story. This is yours.</p>
-  </header>
+      <div id="bootTerminal" class="boot-terminal"></div>
 
-  <!-- ============================================================
-    GLOBE SECTION
-    Person 1 will put their interactive globe inside this div.
-    The id="globe-container" is important — don't change it.
-  ============================================================ -->
-  <section class="globe-section">
-    <div id="globe-container">
-      <!-- Person 1's globe goes here -->
-      <p class="globe-placeholder">🌍 Globe loads here</p>
-    </div>
+      <div class="boot-progress">
+        <div id="bootProgressBar" class="boot-progress-bar"></div>
+      </div>
 
-    <!-- Search bar for typing a city -->
-    <div class="search-bar">
-      <input type="text" id="location-input" placeholder="Search any city or drop a pin on the globe..." />
-      <button id="search-btn">Scan Sky</button>
+      <p id="bootStatus" class="boot-status">Initializing system...</p>
+
+      <button class="skip-boot-btn" onclick="forceOpenApp()">ENTER SYSTEM</button>
     </div>
   </section>
 
-  <!-- ============================================================
-    COORDINATE DISPLAY
-    Shows the lat/long of wherever the user clicked or searched.
-    Person 2 will update the text inside these spans.
-  ============================================================ -->
-  <div class="coordinate-display">
-    <span>LAT: <strong id="lat-display">--</strong></span>
-    <span>LNG: <strong id="lng-display">--</strong></span>
-  </div>
+  <main id="mainApp" class="main-app">
+    <div class="space-bg"></div>
+    <div class="aurora-orb orb-one"></div>
+    <div class="aurora-orb orb-two"></div>
+    <div class="aurora-orb orb-three"></div>
 
-  <!-- ============================================================
-    ORBIT SCORE — THE CENTERPIECE
-    This is the big glowing circular gauge you will style.
-    The number inside (id="orbit-score-value") gets updated by Person 2.
-  ============================================================ -->
-  <section class="score-section">
-    <div class="orbit-score-container">
-      <svg class="score-ring" viewBox="0 0 200 200">
-        <!-- Background ring (always visible, dark) -->
-        <circle class="ring-bg" cx="100" cy="100" r="80" />
-        <!-- Foreground ring (this is the glowing arc — Person 2 animates stroke-dashoffset) -->
-        <circle class="ring-fill" id="score-ring-fill" cx="100" cy="100" r="80" />
-      </svg>
-      <div class="score-inner">
-        <span class="score-label">ORBIT SCORE</span>
-        <span class="score-value" id="orbit-score-value">--</span>
-        <span class="score-sublabel">/ 100</span>
+    <header class="top-hud">
+      <div class="brand-block">
+        <h1>ZENITH</h1>
+        <p>Project Zenith: The Celestial Eye</p>
+      </div>
+
+      <div class="status-pill">
+        <span class="pulse-dot"></span>
+        <span id="statusText">SYSTEM ONLINE</span>
+      </div>
+    </header>
+
+    <section class="hero-section">
+      <div class="hero-copy">
+        <p class="eyebrow">ORBITAL COORDINATE INTELLIGENCE</p>
+        <h2>Scan Earth. Read the sky. Track the orbit.</h2>
+        <p>
+          Select any coordinate and generate a futuristic space intelligence report
+          with ISS range, space weather, impact history, NEO threat watch,
+          aurora probability, satellites, planets, constellations, and a 3D sky dome.
+        </p>
+
+        <div class="hero-actions">
+          <button onclick="openSkyDome()" class="primary-btn">OPEN 3D SKY DOME</button>
+          <button onclick="findBestSky()" class="secondary-btn">BEST SKY FINDER</button>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="floating-cube cube-a"></div>
+        <div class="floating-cube cube-b"></div>
+        <div class="floating-cube cube-c"></div>
+        <div class="core-orb">
+          <span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <aside class="control-panel glass-panel">
+        <div class="panel-title">
+          <span></span>
+          <h3>Coordinate Lock</h3>
+        </div>
+
+        <label>Latitude</label>
+        <input id="latInput" type="number" step="0.0001" value="13.0827" />
+
+        <label>Longitude</label>
+        <input id="lngInput" type="number" step="0.0001" value="80.2707" />
+
+        <button id="scanBtn" class="primary-btn full-btn">INITIATE SCAN</button>
+        <button id="use-location-btn" class="secondary-btn full-btn">USE MY LOCATION</button>
+        <button id="copy-coordinates-btn" class="secondary-btn full-btn">COPY COORDINATES</button>
+
+        <div class="search-box">
+          <input id="location-input" type="text" placeholder="Search city/place..." />
+          <button id="search-btn">SEARCH MAP</button>
+        </div>
+
+        <div class="coordinate-readout">
+          <div>
+            <span>LAT</span>
+            <strong id="lat-display">13.0827</strong>
+          </div>
+          <div>
+            <span>LNG</span>
+            <strong id="lng-display">80.2707</strong>
+          </div>
+        </div>
+
+        <div class="score-card">
+          <h4>ZENITH INDEX</h4>
+
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="48" class="score-bg"></circle>
+              <circle id="score-ring-fill" cx="60" cy="60" r="48" class="score-fill"></circle>
+            </svg>
+            <span id="orbit-score-value">72</span>
+          </div>
+
+          <p id="score-description">Coordinate profile stable for orbital observation.</p>
+        </div>
+      </aside>
+
+      <section class="map-zone">
+        <div class="mega-map-frame">
+          <div class="corner c1"></div>
+          <div class="corner c2"></div>
+          <div class="corner c3"></div>
+          <div class="corner c4"></div>
+
+          <div class="mega-map-header">
+            <span>EARTH COORDINATE RADAR</span>
+            <span>LIVE MAP FEED</span>
+          </div>
+
+          <div class="mega-map-screen">
+            <div id="globe-container"></div>
+          </div>
+        </div>
+
+        <div class="report-box glass-panel" id="reportBox">
+          Awaiting coordinate scan...
+        </div>
+      </section>
+
+      <aside class="fragment-panel glass-panel">
+        <div class="panel-title">
+          <span></span>
+          <h3>Live Fragments</h3>
+        </div>
+
+        <div class="fragment-item">
+          <span>01</span>
+          <p id="fragmentOne">Coordinate system ready.</p>
+        </div>
+
+        <div class="fragment-item">
+          <span>02</span>
+          <p id="fragmentTwo">ISS feed waiting.</p>
+        </div>
+
+        <div class="fragment-item">
+          <span>03</span>
+          <p id="fragmentThree">Space weather waiting.</p>
+        </div>
+
+        <div class="fragment-item">
+          <span>04</span>
+          <p id="fragmentFour">Threat watch waiting.</p>
+        </div>
+
+        <div class="fragment-item">
+          <span>05</span>
+          <p id="fragmentFive">Sky visibility waiting.</p>
+        </div>
+
+        <div class="fragment-item">
+          <span>06</span>
+          <p id="fragmentSix">Sky dome ready on demand.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="intel-section">
+      <div class="section-heading">
+        <p>REAL-TIME MODULES</p>
+        <h2>Orbital Intelligence Dashboard</h2>
+      </div>
+
+      <div class="intel-grid">
+        <div class="intel-card">
+          <div class="intel-label">SKY TRAFFIC</div>
+          <div class="intel-value" id="satellite-count">Scanning</div>
+          <div class="intel-detail" id="satellite-detail">Waiting for coordinate lock</div>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-label">SPACE WEATHER</div>
+          <div class="intel-value" id="kp-index">Scanning</div>
+          <div class="intel-detail" id="kp-detail">Waiting for NOAA feed</div>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-label">IMPACT HISTORY</div>
+          <div class="intel-value" id="crater-name">Scanning</div>
+          <div class="intel-detail" id="crater-detail">Nearest known impact profile</div>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-label">THREAT WATCH</div>
+          <div class="intel-value" id="neo-count">Scanning</div>
+          <div class="intel-detail" id="neo-detail">Waiting for NEO feed</div>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-label">ISS INTELLIGENCE</div>
+          <div class="intel-value" id="iss-pass-time">Scanning</div>
+          <div class="intel-detail" id="iss-detail">Waiting for ISS position</div>
+        </div>
+
+        <div class="intel-card">
+          <div class="intel-label">AURORA WATCH</div>
+          <div class="intel-value" id="aurora-probability">Scanning</div>
+          <div class="intel-detail" id="aurora-detail">Waiting for space weather</div>
+        </div>
+
+        <div class="intel-card new-module">
+          <div class="intel-label">ACTIVE SATELLITES OVERHEAD</div>
+          <div class="intel-value" id="overhead-satellite-count">Scanning</div>
+          <div class="intel-detail" id="overhead-satellite-detail">Waiting for orbital estimate</div>
+        </div>
+
+        <div class="intel-card new-module">
+          <div class="intel-label">PLANETS OVERHEAD</div>
+          <div class="intel-value" id="planet-overhead-count">Scanning</div>
+          <div class="intel-detail" id="planet-overhead-detail">Waiting for sky calculation</div>
+        </div>
+
+        <div class="intel-card new-module">
+          <div class="intel-label">CONSTELLATIONS OVERHEAD</div>
+          <div class="intel-value" id="constellation-count">Scanning</div>
+          <div class="intel-detail" id="constellation-detail">Waiting for night-sky estimate</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-section">
+      <div class="feature-panel glass-panel">
+        <h3>Time Machine</h3>
+        <p>Generate a historical coordinate-based sky profile.</p>
+
+        <div class="feature-row">
+          <input id="tm-date" type="date" />
+          <input id="tm-location" type="text" placeholder="Location label" />
+          <button onclick="runTimeMachine()">RUN TIME MACHINE</button>
+        </div>
+
+        <div id="tm-result" class="feature-result">
+          Waiting for historical sky scan.
+        </div>
+      </div>
+
+      <div class="feature-panel glass-panel">
+        <h3>Best Sky Finder</h3>
+        <p>Discover strong observation zones using sky darkness and observatory profiles.</p>
+
+        <button onclick="findBestSky()">FIND BEST SKY LOCATIONS</button>
+
+        <div id="best-sky-result" class="feature-result">
+          Waiting for sky quality search.
+        </div>
+      </div>
+
+      <div class="feature-panel glass-panel">
+        <h3>Mission Brief</h3>
+        <p id="space-brief-text">
+          ZENITH is ready. Select a coordinate to generate an orbital intelligence profile.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <section id="skyDomeModal" class="sky-dome-modal">
+    <div class="sky-dome-shell">
+      <div class="sky-dome-topbar">
+        <div>
+          <h2>3D SKY DOME</h2>
+          <p id="skyDomeLocation">Coordinate sky simulation</p>
+        </div>
+
+        <button onclick="closeSkyDome()">CLOSE</button>
+      </div>
+
+      <div class="sky-dome-body">
+        <canvas id="skyDomeCanvas"></canvas>
+
+        <div class="sky-dome-info">
+          <h3>Sky Objects</h3>
+
+          <div class="sky-info-card">
+            <span>Satellites</span>
+            <strong id="domeSatelliteText">Waiting</strong>
+          </div>
+
+          <div class="sky-info-card">
+            <span>Planets</span>
+            <strong id="domePlanetText">Waiting</strong>
+          </div>
+
+          <div class="sky-info-card">
+            <span>Constellations</span>
+            <strong id="domeConstellationText">Waiting</strong>
+          </div>
+
+          <p>
+            This lightweight 3D dome loads only when opened, keeping the main site fast.
+          </p>
+        </div>
       </div>
     </div>
-    <p class="score-description" id="score-description">Select a location to generate your cosmic score</p>
   </section>
 
-  <!-- ============================================================
-    6 DASHBOARD CARDS
-    Each card shows one layer of data.
-    The id on each <p> tag is where Person 2 puts the real data.
-    You style these cards in style.css.
-  ============================================================ -->
-  <section class="dashboard">
-
-    <!-- Card 1: Sky Traffic -->
-    <div class="card" id="card-sky-traffic">
-      <div class="card-header">
-        <span class="card-icon">🛰️</span>
-        <h3 class="card-title">Sky Traffic</h3>
-      </div>
-      <p class="card-value" id="satellite-count">Loading...</p>
-      <p class="card-detail" id="satellite-detail">Satellites passing overhead</p>
-    </div>
-
-    <!-- Card 2: Space Weather -->
-    <div class="card" id="card-space-weather">
-      <div class="card-header">
-        <span class="card-icon">☀️</span>
-        <h3 class="card-title">Space Weather</h3>
-      </div>
-      <p class="card-value" id="kp-index">Loading...</p>
-      <p class="card-detail" id="kp-detail">Geomagnetic activity (Kp index)</p>
-    </div>
-
-    <!-- Card 3: Ground Impact History -->
-    <div class="card" id="card-impact">
-      <div class="card-header">
-        <span class="card-icon">☄️</span>
-        <h3 class="card-title">Impact History</h3>
-      </div>
-      <p class="card-value" id="crater-name">Loading...</p>
-      <p class="card-detail" id="crater-detail">Nearest meteor crater</p>
-    </div>
-
-    <!-- Card 4: Active Threat Watch -->
-    <div class="card" id="card-threats">
-      <div class="card-header">
-        <span class="card-icon">🪨</span>
-        <h3 class="card-title">Threat Watch</h3>
-      </div>
-      <p class="card-value" id="neo-count">Loading...</p>
-      <p class="card-detail" id="neo-detail">Near-Earth objects tracked</p>
-    </div>
-
-    <!-- Card 5: ISS Intelligence -->
-    <div class="card" id="card-iss">
-      <div class="card-header">
-        <span class="card-icon">🚀</span>
-        <h3 class="card-title">ISS Intelligence</h3>
-      </div>
-      <p class="card-value" id="iss-pass-time">Loading...</p>
-      <p class="card-detail" id="iss-detail">Next ISS pass over your location</p>
-    </div>
-
-    <!-- Card 6: Aurora Probability -->
-    <div class="card" id="card-aurora">
-      <div class="card-header">
-        <span class="card-icon">🌌</span>
-        <h3 class="card-title">Aurora Watch</h3>
-      </div>
-      <p class="card-value" id="aurora-probability">Loading...</p>
-      <p class="card-detail" id="aurora-detail">Aurora visibility probability</p>
-    </div>
-
-  </section>
-
-  <!-- ============================================================
-    SPECIAL FEATURES BAR
-  ============================================================ -->
-  <section class="features-bar">
-    <button class="feature-btn" onclick="openTimeMachine()">🕰️ Time Machine</button>
-    <button class="feature-btn" onclick="openBestSky()">🔭 Find My Best Sky</button>
-  </section>
-
-  <!-- TIME MACHINE PANEL (hidden by default) -->
-  <div class="feature-panel" id="time-machine-panel">
-    <h2 class="panel-title">🕰️ Time Machine</h2>
-    <p class="panel-subtitle">Pick any date and location — see exactly what was in the sky then.</p>
-    <div class="panel-inputs">
-      <input type="date" id="tm-date" class="panel-input" max="2026-06-11" />
-      <input type="text" id="tm-location" class="panel-input" placeholder="Location (e.g. Cape Canaveral, Florida)" />
-      <button class="panel-btn" onclick="runTimeMachine()">Travel Back →</button>
-    </div>
-    <div class="panel-examples">
-      <p class="examples-label">Try these:</p>
-      <button class="example-chip" onclick="setTimeMachine('1969-07-20','Cape Canaveral, Florida')">🚀 Moon Landing 1969</button>
-      <button class="example-chip" onclick="setTimeMachine('1986-01-28','Cape Canaveral, Florida')">💥 Challenger 1986</button>
-      <button class="example-chip" onclick="setTimeMachine('2001-09-11','New York City')">🗽 NYC Sep 11 2001</button>
-    </div>
-    <div id="tm-result" class="panel-result"></div>
-  </div>
-
-  <!-- FIND MY BEST SKY PANEL (hidden by default) -->
-  <div class="feature-panel" id="best-sky-panel">
-    <h2 class="panel-title">🔭 Find My Best Sky</h2>
-    <p class="panel-subtitle">Tell ORBIT what you want to see — it finds the best place on Earth right now.</p>
-    <div class="panel-checkboxes">
-      <label class="check-label"><input type="checkbox" id="want-iss" checked /> 🚀 ISS visible pass</label>
-      <label class="check-label"><input type="checkbox" id="want-aurora" /> 🌌 Aurora borealis</label>
-      <label class="check-label"><input type="checkbox" id="want-lowlight" /> ✨ Dark sky / no light pollution</label>
-    </div>
-    <button class="panel-btn" onclick="findBestSky()">Find Best Location →</button>
-    <div id="best-sky-result" class="panel-result"></div>
-  </div>
-
-  <!-- ============================================================
-    AI SPACE BRIEF
-    Person 2 will call the Claude API and put the result here.
-    This is the "it talks to you" feature that sets ORBIT apart.
-  ============================================================ -->
-  <section class="space-brief-section">
-    <h2 class="brief-title">⚡ Space Brief</h2>
-    <p class="brief-text" id="space-brief-text">
-      Select a location and ORBIT will generate your personalised cosmic intelligence report.
-    </p>
-  </section>
-
-  <!-- ============================================================
-    FOOTER
-  ============================================================ -->
-  <footer class="footer">
-    <p>ORBIT — Built for AstralWeb Innovate · Aaruush '26 · SRMIST</p>
-  </footer>
-
-  <!-- Scripts (load order matters — globe first, then api, then any extras) -->
-  <script src="globe.js"></script>
-  <script src="api.js"></script>
-  <script src="features.js"></script>
   <script>
-    function setTimeMachine(date, location) {
-      document.getElementById("tm-date").value = date;
-      document.getElementById("tm-location").value = location;
+    function forceOpenApp() {
+      const boot = document.getElementById("bootScreen");
+      const app = document.getElementById("mainApp");
+
+      if (boot) {
+        boot.classList.add("hide");
+        boot.style.display = "none";
+      }
+
+      if (app) {
+        app.classList.add("show");
+        app.style.opacity = "1";
+        app.style.transform = "scale(1)";
+      }
     }
   </script>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
