@@ -1,6 +1,6 @@
 #  ZENITH – The Celestial Eye
 
-## 📖 Overview
+##  Overview
 
 ZENITH is an interactive space intelligence web application that transforms any Earth coordinate into a futuristic astronomy dashboard. Users can explore satellite activity, planetary visibility, constellations, space weather, Near-Earth Objects, and an immersive 3D sky dome through an intuitive interface.
 
@@ -8,13 +8,13 @@ Built for the **AstralWeb Innovate Hackathon**, ZENITH combines interactive maps
 
 
 
-# 🚀 Live Demo
+#  Live Demo
 
 https://zenith-celestial-jmv.netlify.app/   
 
 
 
-# 🎯 Objective
+#  Objective
 
 To create an intelligent coordinate-based web application that allows users to explore the sky above any location on Earth while providing real-time astronomical information through a modern, futuristic interface.
 
@@ -75,7 +75,7 @@ To create an intelligent coordinate-based web application that allows users to e
 
 ---
 
-# 🛠️ Technologies Used
+#  Technologies Used
 
 - HTML5
 - CSS3
@@ -122,7 +122,7 @@ Zenith/
 
 ---
 
-# 👥 Team
+#  Team
 
 ### Manikandan
 - UI/UX Design
