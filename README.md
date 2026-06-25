@@ -164,6 +164,32 @@ Zenith/
 ├── skydome.js
 └── README.md
 
+ Architecture Overview
+
+ZENITH follows a modular frontend architecture designed to keep the project organized, maintainable, and scalable.
+
+The application is divided into separate modules, each responsible for a specific functionality:
+
+* index.html – Defines the overall structure and layout of the website.
+* style.css – Handles styling, animations, responsive layouts, and the futuristic user interface.
+* script.js – Contains the core application logic, including map interaction, coordinate processing, GPS detection, API communication, and user interface updates.
+* skydome.js – Powers the interactive 3D Sky Dome visualization and celestial rendering.
+
+The project integrates several external technologies such as Leaflet.js, OpenStreetMap, Browser Geolocation API, and astronomy APIs to provide an interactive mapping experience and astronomy-related information.
+
+⸻
+
+ Implementation Approach
+
+ZENITH was developed using a modular and iterative development approach.
+
+The project began by designing a futuristic space-themed user interface focused on simplicity and usability. An interactive map was then integrated using Leaflet.js, allowing users to select any location on Earth or use their current GPS location.
+
+JavaScript modules were implemented to process user interactions, retrieve coordinate-based astronomy information, generate a live space intelligence report, and render the interactive 3D Sky Dome. Separate modules were used to improve maintainability and allow independent feature development by different team members.
+
+Responsive web design techniques such as CSS Grid, Flexbox, and Media Queries were implemented to ensure compatibility across desktops, laptops, tablets, and mobile devices.
+
+Finally, the application was tested, optimized, and deployed using Netlify, providing a fast and publicly accessible live website for demonstration.
  Responsive Design & Testing
 
 ZENITH was designed using a responsive layout to provide a consistent experience across different devices.
