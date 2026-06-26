@@ -10,9 +10,8 @@ Developed for the AstralWeb Innovate Hackathon, ZENITH combines mapping technolo
 
 ## Live Demo
 
-https://your-netlify-link.netlify.app
+https://zenith-celestial-vjm.netlify.app
 
----
 
 ## GitHub Repository
 
