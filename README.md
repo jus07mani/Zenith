@@ -63,6 +63,28 @@ https://github.com/jus07mani/Zenith
 
 - OpenStreetMap
 - Browser Geolocation API
+- ## Project Architecture
+
+ZENITH follows a modular client-side architecture.
+
+- index.html – User interface and layout
+- style.css – Glassmorphism styling and responsive design
+- script.js – Core application logic
+- globe.js – Interactive Earth visualization
+- skydome.js – 3D celestial sky rendering
+- particles.js – Background particle effects
+- animations.js – UI animations
+- cursor.js – Custom cursor interactions
+- effects.js – Visual interface enhancements
+- utils.js – Shared helper functions
+- ## Future Enhancements
+
+- Live satellite tracking using real-time orbital data
+- AI-based astronomy recommendations
+- Telescope integration
+- Augmented Reality sky view
+- Deep-space object database
+- User accounts and saved observations
 
 ---
 
