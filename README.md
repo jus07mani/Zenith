@@ -1,277 +1,161 @@
- ZENITH – The Celestial Eye
+# ZENITH – Celestial Coordinate Intelligence
 
- Overview
+## Overview
 
-ZENITH is an interactive space intelligence web application that transforms any Earth coordinate into a futuristic astronomy dashboard. Users can explore satellite activity, planetary visibility, constellations, space weather, Near-Earth Objects, and an immersive 3D sky dome through an intuitive interface.
+ZENITH is a coordinate-based web application that transforms any Earth location into an interactive astronomy dashboard. Users can select any coordinate on Earth to explore satellite activity, space weather, planetary visibility, constellation information, near-Earth object monitoring, and an immersive 3D sky visualization.
 
-Built for the AstralWeb Innovate Hackathon, ZENITH combines interactive maps, astronomy data, and modern web technologies to make space exploration accessible to everyone.
+Developed for the AstralWeb Innovate Hackathon, ZENITH combines mapping technology, astronomy, and modern web design into a single intelligent platform.
 
- Live Demo
+---
 
-Website:
-https://zenith-celestial-jmv.netlify.app/
+## Live Demo
 
+https://your-netlify-link.netlify.app
 
-Objective
+---
 
-To create an intelligent coordinate-based web application that allows users to explore the sky above any location on Earth while providing real-time astronomical information through a modern, futuristic interface.
+## GitHub Repository
 
+https://github.com/jus07mani/Zenith
 
+---
 
- Website Functionality
+## Features
 
-ZENITH is an interactive coordinate-based astronomy web application that allows users to explore the sky above any location on Earth.
+- Interactive Earth coordinate map
+- Coordinate selection by map click
+- GPS location detection
+- Search any city or coordinates
+- Live coordinate report generation
+- Observation score calculation
+- Day/Night detector
+- UTC clock
+- Planet visibility estimation
+- Active satellite estimation
+- Constellation information
+- Near-Earth Object monitoring
+- Aurora probability estimation
+- Nearest impact crater finder
+- Space weather (KP Index)
+- Mission Brief generation
+- Historical Time Machine
+- Best Sky Finder
+- Immersive 3D Sky Dome
+- Modern glassmorphism interface
+- Responsive desktop and mobile layout
 
-Users can:
+---
 
-* Select any coordinate on the interactive Earth map.
-* Detect and use the current GPS location.
-* Search for any city or coordinates worldwide.
-* Generate a live space intelligence report.
-* View nearby satellite information.
-* Monitor space weather conditions.
-* Explore visible planets and constellations.
-* Track Near-Earth Objects (NEOs).
-* Launch an interactive 3D Sky Dome.
-* Visualize astronomy data through a futuristic dashboard.
+## Technology Stack
 
+### Frontend
 
+- HTML5
+- CSS3
+- JavaScript (ES6)
 
- Features
+### Libraries
 
-*  Interactive Earth Coordinate Map
-*  GPS Location Detection
-*  Search Any City or Coordinates
-*  Active Satellite Information
-*  Space Weather Monitoring
-*  Near-Earth Object (NEO) Tracking
-*  Planet Visibility
-*  Constellation Information
-*  Interactive 3D Sky Dome
-*  Live Intelligence Feed
-*  Coordinate Copy Function
-*  Fully Responsive Design
-*  Smooth UI Animations
-*  Futuristic Space-Themed Interface
+- Leaflet.js
+- Three.js
+- GSAP
 
+### APIs
 
+- OpenStreetMap
+- Browser Geolocation API
 
-Concepts Used
+---
 
-Frontend Development
+## Project Structure
 
-* HTML5
-* CSS3
-* JavaScript (ES6)
-
-Responsive Web Design
-
-* Flexbox
-* CSS Grid
-* Media Queries
-
-Interactive Mapping
-
-* Leaflet.js
-* OpenStreetMap
-
-Browser APIs
-
-* Geolocation API
-* Clipboard API
-
-Astronomy Concepts
-
-* Satellite Tracking
-* Planetary Positions
-* Constellations
-* Near-Earth Objects
-* Space Weather
-* Coordinate Systems
-* Latitude & Longitude
-
-UI / UX
-
-* Glassmorphism
-* Dark Theme
-* CSS Animations
-* Responsive Layout
-
-
-
- Technologies Used
-
-* HTML5
-* CSS3
-* JavaScript
-* Leaflet.js
-* OpenStreetMap
-* Astronomy APIs
-* Netlify
-* Git
-* GitHub
-* Visual Studio Code
-
-
- Dependencies
-
-The project requires the following technologies and libraries:
-
-* HTML5
-* CSS3
-* JavaScript (ES6)
-* Leaflet.js
-* OpenStreetMap Tiles
-* Browser Geolocation API
-* Clipboard API
-* Modern Web Browser (Chrome, Edge, Firefox, Safari)
-* Internet connection (for maps and astronomy data)
-
-
-
- Installation & Setup Instructions
-
-Prerequisites
-
-* Visual Studio Code
-* Live Server Extension
-* Internet Connection
-
-Run Locally
-
-1. Clone the repository
-
-git clone https://github.com/jus07mani/Zenith.git
-
-2. Open the project folder in Visual Studio Code.
-3. Install the Live Server extension (if not already installed).
-4. Right-click index.html and select Open with Live Server.
-5. The application will open automatically in your browser.
-
-Live Version
-
-You can also access the deployed website at:
-
-https://zenith-celestial-jmv.netlify.app/
-
- Project Structure
-
-Zenith/
+```
+ZENITH
 │
 ├── index.html
 ├── style.css
 ├── script.js
+├── globe.js
 ├── skydome.js
+├── particles.js
+├── effects.js
+├── animations.js
+├── cursor.js
+├── utils.js
+├── assets/
 └── README.md
+```
 
- Architecture Overview
+---
 
-ZENITH follows a modular frontend architecture designed to keep the project organized, maintainable, and scalable.
+## How It Works
 
-The application is divided into separate modules, each responsible for a specific functionality:
+1. Select any location by clicking on the map, entering coordinates manually, or searching for a city.
+2. ZENITH locks onto the selected coordinates.
+3. The system analyzes the location and generates:
+   - Observation Score
+   - Day/Night status
+   - Space Weather
+   - Active Satellites
+   - Planet Visibility
+   - Constellation Information
+   - Near-Earth Objects
+   - Aurora Probability
+   - Nearest Impact Crater
+4. Users can launch the 3D Sky Dome for an immersive visualization.
+5. Additional tools such as Time Machine and Best Sky Finder provide extended exploration features.
 
-* index.html – Defines the overall structure and layout of the website.
-* style.css – Handles styling, animations, responsive layouts, and the futuristic user interface.
-* script.js – Contains the core application logic, including map interaction, coordinate processing, GPS detection, API communication, and user interface updates.
-* skydome.js – Powers the interactive 3D Sky Dome visualization and celestial rendering.
+---
 
-The project integrates several external technologies such as Leaflet.js, OpenStreetMap, Browser Geolocation API, and astronomy APIs to provide an interactive mapping experience and astronomy-related information.
+## Future Improvements
 
-⸻
+- Real-time satellite tracking
+- Live NASA and ESA integrations
+- Meteor shower prediction
+- Moon phase visualization
+- Telescope recommendation engine
+- AI-powered astronomy assistant
+- Weather-aware observation forecasting
+- User accounts and saved observations
 
- Implementation Approach
+---
 
-ZENITH was developed using a modular and iterative development approach.
+## Installation
 
-The project began by designing a futuristic space-themed user interface focused on simplicity and usability. An interactive map was then integrated using Leaflet.js, allowing users to select any location on Earth or use their current GPS location.
+Clone the repository
 
-JavaScript modules were implemented to process user interactions, retrieve coordinate-based astronomy information, generate a live space intelligence report, and render the interactive 3D Sky Dome. Separate modules were used to improve maintainability and allow independent feature development by different team members.
+```bash
+git clone https://github.com/jus07mani/Zenith.git
+```
 
-Responsive web design techniques such as CSS Grid, Flexbox, and Media Queries were implemented to ensure compatibility across desktops, laptops, tablets, and mobile devices.
+Open the project folder
 
-Finally, the application was tested, optimized, and deployed using Netlify, providing a fast and publicly accessible live website for demonstration.
- Responsive Design & Testing
+```bash
+cd Zenith
+```
 
-ZENITH was designed using a responsive layout to provide a consistent experience across different devices.
+Run the project using Live Server or any local web server.
 
-Devices Tested
+---
 
-* Desktop
-* Laptop
-* Tablet
-* Mobile Phone
-
-Browsers Tested
-
-* Google Chrome
-* Microsoft Edge
-
-Responsive Testing
-
-The website was tested using Chrome Developer Tools (Device Toolbar) on multiple screen sizes, including:
-
-* iPhone SE
-* iPhone 14 Pro
-* iPhone 15 Pro Max
-* iPad Air
-* iPad Pro
-* Samsung Galaxy S25 Ultra
-
-
-The layout automatically adapts using:
-
-* CSS Grid
-* Flexbox
-* Media Queries
-
-
-
- Future Improvements
-
-*  Real-time ISS orbit visualization
-*  Live satellite orbit animations
-*  AI-powered astronomy assistant
-*  Weather radar integration
-*  Meteor shower predictions
-*  Moon phase calendar
-*  Solar System explorer
-*  Interactive analytics dashboard
-*  Save favourite locations
-*  Space event notifications
-*  AR (Augmented Reality) sky view
-*  User accounts and cloud sync
-*  Multi-language support
-*  Voice-controlled navigation
-
- Team
+## Team
 
 Manikandan
 
-* UI/UX Design
-* Frontend Development
-* Project Integration
-* Deployment
-
 Jyotsna Anand
 
-* API Integration
-* Feature Development
-* Sky Dome Module
+Vijayshree R.
 
-Vijayshree R
+---
 
-* Globe Module
-* JavaScript Functionality
-* Visualization
+## Hackathon
 
+AstralWeb Innovate Hackathon
 
- License
+---
 
-This project was developed for educational purposes as part of the AstralWeb Innovate Hackathon.
+## License
 
+This project was developed exclusively for the AstralWeb Innovate Hackathon.
 
- Vision
-
-“Scan Earth. Read the Sky. Track the Orbit.”
-
-ZENITH aims to make astronomy and space intelligence interactive, accessible, and engaging through modern web technologies.
+Copyright © 2026 Team ZENITH. All rights reserved.
