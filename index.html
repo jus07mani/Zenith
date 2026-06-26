@@ -6,15 +6,25 @@
 
   <title>ZENITH | Celestial Coordinate Intelligence</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Michroma&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+  <canvas id="particleCanvas"></canvas>
+  <div class="luxury-bg"></div>
+  <div class="glass-noise"></div>
+  <div class="zenith-cursor"></div>
+
   <section id="bootScreen" class="boot-screen">
-    <div class="boot-card">
+    <div class="boot-card premium-glass">
+      <p class="boot-kicker">CELESTIAL COORDINATE INTELLIGENCE</p>
       <h1>ZENITH</h1>
-      <p>Celestial Coordinate Intelligence System</p>
+      <p class="boot-subtitle">Initializing orbital intelligence environment</p>
 
       <div id="bootTerminal" class="boot-terminal"></div>
 
@@ -24,56 +34,107 @@
 
       <p id="bootStatus" class="boot-status">Initializing system...</p>
 
-      <button class="skip-boot-btn" onclick="forceOpenApp()">ENTER SYSTEM</button>
     </div>
   </section>
 
   <main id="mainApp" class="main-app">
-    <div class="space-bg"></div>
-    <div class="aurora-orb orb-one"></div>
-    <div class="aurora-orb orb-two"></div>
-    <div class="aurora-orb orb-three"></div>
-
-    <header class="top-hud">
+    <header class="top-hud premium-glass">
       <div class="brand-block">
+        <p>PROJECT ZENITH</p>
         <h1>ZENITH</h1>
-        <p>Project Zenith: The Celestial Eye</p>
       </div>
 
-      <div class="status-pill">
+      <nav class="mini-nav">
+        <a href="#dashboard">Control</a>
+        <a href="#intel">Intel</a>
+        <a href="#features">Tools</a>
+      </nav>
+
+      
+      <div style="display:flex;align-items:center;gap:16px;">
+
+          <div class="utc-panel">
+
+              <div id="utc-time">
+                   00:00:00 UTC
+              </div>
+
+               <small id="utc-date">
+                    Loading...
+               </small>
+
+    </div>
+
+    <div class="status-pill">
         <span class="pulse-dot"></span>
         <span id="statusText">SYSTEM ONLINE</span>
-      </div>
+    </div>
+
+
     </header>
 
-    <section class="hero-section">
+    <section class="hero-section premium-glass tilt-card">
       <div class="hero-copy">
         <p class="eyebrow">ORBITAL COORDINATE INTELLIGENCE</p>
         <h2>Scan Earth. Read the sky. Track the orbit.</h2>
         <p>
-          Select any coordinate and generate a futuristic space intelligence report
-          with ISS range, space weather, impact history, NEO threat watch,
-          aurora probability, satellites, planets, constellations, and a 3D sky dome.
+          Select any coordinate and generate a celestial intelligence report with ISS range,
+          space weather, impact history, NEO threat watch, aurora probability, satellites,
+          planets, constellations, and a cinematic sky dome.
         </p>
 
         <div class="hero-actions">
-          <button onclick="openSkyDome()" class="primary-btn">OPEN 3D SKY DOME</button>
-          <button onclick="findBestSky()" class="secondary-btn">BEST SKY FINDER</button>
+          <button onclick="openSkyDome()" class="primary-btn magnetic-btn">OPEN SKY DOME</button>
+          <button onclick="findBestSky()" class="secondary-btn magnetic-btn">BEST SKY FINDER</button>
+        </div>
+
+        <div class="hero-metrics">
+          <div><span>LIVE</span><strong>NOAA</strong></div>
+          <div><span>ORBIT</span><strong>ISS</strong></div>
+          <div><span>SKY</span><strong>DOME</strong></div>
         </div>
       </div>
 
       <div class="hero-visual">
-        <div class="floating-cube cube-a"></div>
-        <div class="floating-cube cube-b"></div>
-        <div class="floating-cube cube-c"></div>
-        <div class="core-orb">
-          <span></span>
+        <div id="threeGlobe"></div>
+
+        <div class="floating-tile tile-a premium-glass">
+          <span>LAT</span>
+          <strong id="lat-display-hero">13.0827</strong>
+        </div>
+
+        <div class="floating-tile tile-b premium-glass">
+          <span>LNG</span>
+          <strong id="lng-display-hero">80.2707</strong>
+        </div>
+
+        <div class="floating-tile tile-c premium-glass">
+            <span>OBSERVATION SCORE</span>
+
+            <strong id="hero-index">72</strong>
+
+            <div id="obs-stars" class="obs-stars">
+                ★★★★☆
+            </div>
+
+            <small id="obs-rating">
+                Excellent Viewing
+            </small>
         </div>
       </div>
+    <div class="floating-tile tile-d premium-glass daynight-card">
+
+          <span>SKY STATUS</span>
+
+          <strong id="dayNightIcon">☀</strong>
+
+          <small id="dayNightText">DAY</small>
+
+    </div>
     </section>
 
-    <section class="dashboard">
-      <aside class="control-panel glass-panel">
+    <section id="dashboard" class="dashboard">
+      <aside class="control-panel premium-glass tilt-card">
         <div class="panel-title">
           <span></span>
           <h3>Coordinate Lock</h3>
@@ -82,16 +143,19 @@
         <label>Latitude</label>
         <input id="latInput" type="number" step="0.0001" value="13.0827" />
 
-        <label>Longitude</label>
-        <input id="lngInput" type="number" step="0.0001" value="80.2707" />
+        
+        
 
-        <button id="scanBtn" class="primary-btn full-btn">INITIATE SCAN</button>
-        <button id="use-location-btn" class="secondary-btn full-btn">USE MY LOCATION</button>
-        <button id="copy-coordinates-btn" class="secondary-btn full-btn">COPY COORDINATES</button>
+        
+        <button id="scanBtn" class="primary-btn full-btn magnetic-btn">INITIATE SCAN</button>
+        <button id="use-location-btn" class="secondary-btn full-btn magnetic-btn">USE MY LOCATION</button>
+        <button id="copy-coordinates-btn" class="secondary-btn full-btn magnetic-btn">COPY COORDINATES</button>
+        <button id="demo-mode-btn" class="secondary-btn full-btn magnetic-btn">DEMO MODE</button>
+        <button id="copy-report-btn" class="secondary-btn full-btn magnetic-btn">COPY REPORT</button>
 
         <div class="search-box">
           <input id="location-input" type="text" placeholder="Search city/place..." />
-          <button id="search-btn">SEARCH MAP</button>
+          <button id="search-btn" class="magnetic-btn">SEARCH MAP</button>
         </div>
 
         <div class="coordinate-readout">
@@ -106,8 +170,7 @@
         </div>
 
         <div class="score-card">
-          <h4>ZENITH INDEX</h4>
-
+          <h4>OBSERVATION SCORE</h4>
           <div class="score-ring">
             <svg viewBox="0 0 120 120">
               <circle cx="60" cy="60" r="48" class="score-bg"></circle>
@@ -115,17 +178,13 @@
             </svg>
             <span id="orbit-score-value">72</span>
           </div>
-
           <p id="score-description">Coordinate profile stable for orbital observation.</p>
         </div>
       </aside>
 
       <section class="map-zone">
-        <div class="mega-map-frame">
-          <div class="corner c1"></div>
-          <div class="corner c2"></div>
-          <div class="corner c3"></div>
-          <div class="corner c4"></div>
+        <div class="mega-map-frame premium-glass tilt-card">
+          <div class="map-reflection"></div>
 
           <div class="mega-map-header">
             <span>EARTH COORDINATE RADAR</span>
@@ -133,109 +192,87 @@
           </div>
 
           <div class="mega-map-screen">
+            <div class="radar-overlay"></div>
             <div id="globe-container"></div>
           </div>
         </div>
 
-        <div class="report-box glass-panel" id="reportBox">
+        <div class="report-box premium-glass" id="reportBox">
           Awaiting coordinate scan...
         </div>
       </section>
 
-      <aside class="fragment-panel glass-panel">
+      <aside class="fragment-panel premium-glass tilt-card">
         <div class="panel-title">
           <span></span>
           <h3>Live Fragments</h3>
         </div>
 
-        <div class="fragment-item">
-          <span>01</span>
-          <p id="fragmentOne">Coordinate system ready.</p>
-        </div>
-
-        <div class="fragment-item">
-          <span>02</span>
-          <p id="fragmentTwo">ISS feed waiting.</p>
-        </div>
-
-        <div class="fragment-item">
-          <span>03</span>
-          <p id="fragmentThree">Space weather waiting.</p>
-        </div>
-
-        <div class="fragment-item">
-          <span>04</span>
-          <p id="fragmentFour">Threat watch waiting.</p>
-        </div>
-
-        <div class="fragment-item">
-          <span>05</span>
-          <p id="fragmentFive">Sky visibility waiting.</p>
-        </div>
-
-        <div class="fragment-item">
-          <span>06</span>
-          <p id="fragmentSix">Sky dome ready on demand.</p>
-        </div>
+        <div class="fragment-item"><span>01</span><p id="fragmentOne">Coordinate system ready.</p></div>
+        <div class="fragment-item"><span>02</span><p id="fragmentTwo">ISS feed waiting.</p></div>
+        <div class="fragment-item"><span>03</span><p id="fragmentThree">Space weather waiting.</p></div>
+        <div class="fragment-item"><span>04</span><p id="fragmentFour">Threat watch waiting.</p></div>
+        <div class="fragment-item"><span>05</span><p id="fragmentFive">Sky visibility waiting.</p></div>
+        <div class="fragment-item"><span>06</span><p id="fragmentSix">Sky dome ready on demand.</p></div>
       </aside>
     </section>
 
-    <section class="intel-section">
+    <section id="intel" class="intel-section">
       <div class="section-heading">
         <p>REAL-TIME MODULES</p>
         <h2>Orbital Intelligence Dashboard</h2>
       </div>
 
       <div class="intel-grid">
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">SKY TRAFFIC</div>
           <div class="intel-value" id="satellite-count">Scanning</div>
           <div class="intel-detail" id="satellite-detail">Waiting for coordinate lock</div>
         </div>
 
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">SPACE WEATHER</div>
           <div class="intel-value" id="kp-index">Scanning</div>
           <div class="intel-detail" id="kp-detail">Waiting for NOAA feed</div>
         </div>
 
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">IMPACT HISTORY</div>
           <div class="intel-value" id="crater-name">Scanning</div>
           <div class="intel-detail" id="crater-detail">Nearest known impact profile</div>
         </div>
 
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">THREAT WATCH</div>
           <div class="intel-value" id="neo-count">Scanning</div>
           <div class="intel-detail" id="neo-detail">Waiting for NEO feed</div>
         </div>
 
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">ISS INTELLIGENCE</div>
           <div class="intel-value" id="iss-pass-time">Scanning</div>
           <div class="intel-detail" id="iss-detail">Waiting for ISS position</div>
         </div>
 
-        <div class="intel-card">
+        <div class="intel-card premium-glass tilt-card">
           <div class="intel-label">AURORA WATCH</div>
           <div class="intel-value" id="aurora-probability">Scanning</div>
           <div class="intel-detail" id="aurora-detail">Waiting for space weather</div>
         </div>
 
-        <div class="intel-card new-module">
+        <div class="intel-card premium-glass new-module tilt-card">
           <div class="intel-label">ACTIVE SATELLITES OVERHEAD</div>
           <div class="intel-value" id="overhead-satellite-count">Scanning</div>
           <div class="intel-detail" id="overhead-satellite-detail">Waiting for orbital estimate</div>
         </div>
 
-        <div class="intel-card new-module">
+        <div class="intel-card premium-glass new-module tilt-card">
           <div class="intel-label">PLANETS OVERHEAD</div>
           <div class="intel-value" id="planet-overhead-count">Scanning</div>
           <div class="intel-detail" id="planet-overhead-detail">Waiting for sky calculation</div>
         </div>
 
-        <div class="intel-card new-module">
+        <div class="intel-card premium-glass new-module tilt-card">
           <div class="intel-label">CONSTELLATIONS OVERHEAD</div>
           <div class="intel-value" id="constellation-count">Scanning</div>
           <div class="intel-detail" id="constellation-detail">Waiting for night-sky estimate</div>
@@ -243,34 +280,28 @@
       </div>
     </section>
 
-    <section class="feature-section">
-      <div class="feature-panel glass-panel">
+    <section id="features" class="feature-section">
+      <div class="feature-panel premium-glass tilt-card">
         <h3>Time Machine</h3>
         <p>Generate a historical coordinate-based sky profile.</p>
 
         <div class="feature-row">
           <input id="tm-date" type="date" />
           <input id="tm-location" type="text" placeholder="Location label" />
-          <button onclick="runTimeMachine()">RUN TIME MACHINE</button>
+          <button onclick="runTimeMachine()" class="magnetic-btn">RUN TIME MACHINE</button>
         </div>
 
-        <div id="tm-result" class="feature-result">
-          Waiting for historical sky scan.
-        </div>
+        <div id="tm-result" class="feature-result">Waiting for historical sky scan.</div>
       </div>
 
-      <div class="feature-panel glass-panel">
+      <div class="feature-panel premium-glass tilt-card">
         <h3>Best Sky Finder</h3>
         <p>Discover strong observation zones using sky darkness and observatory profiles.</p>
-
-        <button onclick="findBestSky()">FIND BEST SKY LOCATIONS</button>
-
-        <div id="best-sky-result" class="feature-result">
-          Waiting for sky quality search.
-        </div>
+        <button onclick="findBestSky()" class="magnetic-btn">FIND BEST SKY LOCATIONS</button>
+        <div id="best-sky-result" class="feature-result">Waiting for sky quality search.</div>
       </div>
 
-      <div class="feature-panel glass-panel">
+      <div class="feature-panel premium-glass tilt-card">
         <h3>Mission Brief</h3>
         <p id="space-brief-text">
           ZENITH is ready. Select a coordinate to generate an orbital intelligence profile.
@@ -280,14 +311,13 @@
   </main>
 
   <section id="skyDomeModal" class="sky-dome-modal">
-    <div class="sky-dome-shell">
+    <div class="sky-dome-shell premium-glass">
       <div class="sky-dome-topbar">
         <div>
-          <h2>3D SKY DOME</h2>
+          <h2>SKY DOME</h2>
           <p id="skyDomeLocation">Coordinate sky simulation</p>
         </div>
-
-        <button onclick="closeSkyDome()">CLOSE</button>
+        <button onclick="closeSkyDome()" class="magnetic-btn">CLOSE</button>
       </div>
 
       <div class="sky-dome-body">
@@ -311,9 +341,7 @@
             <strong id="domeConstellationText">Waiting</strong>
           </div>
 
-          <p>
-            This lightweight 3D dome loads only when opened, keeping the main site fast.
-          </p>
+          <p>This cinematic sky dome loads only when opened, keeping the main site fast.</p>
         </div>
       </div>
     </div>
@@ -331,13 +359,38 @@
 
       if (app) {
         app.classList.add("show");
-        app.style.opacity = "1";
-        app.style.transform = "scale(1)";
       }
     }
   </script>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <script src="utils.js"></script>
+  <script src="particles.js"></script>
+  <script src="cursor.js"></script>
+  <script src="effects.js"></script>
+  <script src="animations.js"></script>
+  <script src="globe.js"></script>
   <script src="script.js"></script>
+  <footer class="zenith-footer premium-glass">
+    <span>ZENITH v1.0</span>
+
+    <span>•</span>
+
+    <span>AstralWeb Innovate Hackathon</span>
+
+    <span>•</span>
+
+    <span>
+        Built by
+        Vijayshree R.
+        ·
+        Jyotsna Anand
+        ·
+        Manikandan
+    </span>
+</footer>
 </body>
 </html>
